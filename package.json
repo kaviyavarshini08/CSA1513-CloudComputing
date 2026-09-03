@@ -1,0 +1,12 @@
+{
+  "name": "hospital-appointment-api",
+  "version": "1.0.0",
+  "description": "Appointment Booking & Teleconsultation microservice for the multi-campus hospital network (CSA15 Cloud Computing assignment prototype).",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node test/run-tests.js"
+  },
+  "engines": { "node": ">=22.5.0" },
+  "license": "MIT"
+}

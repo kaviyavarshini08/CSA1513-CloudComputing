@@ -1,0 +1,36 @@
+=== 1. Health check ===
+{"status":"ok","service":"appointment-booking","time":"2026-09-03T05:44:19.049Z"}
+=== 2. Register doctor ===
+{"id":1,"name":"Dr. Anita Rao","email":"anita.rao@hospitalnet.org","role":"doctor","campus_id":"CAMPUS-04"}
+=== 3. Register patient ===
+{"id":2,"name":"Ravi Kumar","email":"ravi.kumar@example.com","role":"patient","campus_id":"CAMPUS-04"}
+=== 4. Register admin ===
+{"id":3,"name":"Ops Admin","email":"admin@hospitalnet.org","role":"admin","campus_id":"CAMPUS-00"}
+=== 5. Validation failure (bad email, short password) ===
+{"error":"Validation failed","details":["a valid email is required","password must be at least 8 characters"]}
+=== 6. Login patient ===
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsInJvbGUiOiJwYXRpZW50IiwiY2FtcHVzX2lkIjoiQ0FNUFVTLTA0IiwibmFtZSI6IlJhdmkgS3VtYXIiLCJpYXQiOjE3ODg0MTQyNTksImV4cCI6MTc4ODQxNzg1OX0.WRqp3dRe_BZFVCpQ51cjg_qGYNyLsjQOtszI9I3gu5c","expires_in":3600,"role":"patient"}
+=== 7. Login doctor ===
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJkb2N0b3IiLCJjYW1wdXNfaWQiOiJDQU1QVVMtMDQiLCJuYW1lIjoiRHIuIEFuaXRhIFJhbyIsImlhdCI6MTc4ODQxNDI1OSwiZXhwIjoxNzg4NDE3ODU5fQ.zLM7dh8R6PUYl6u9bymoxEvKw9AIZ5vN3DzA7_RGOM8","expires_in":3600,"role":"doctor"}
+=== 8. Login admin ===
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInJvbGUiOiJhZG1pbiIsImNhbXB1c19pZCI6IkNBTVBVUy0wMCIsIm5hbWUiOiJPcHMgQWRtaW4iLCJpYXQiOjE3ODg0MTQyNTksImV4cCI6MTc4ODQxNzg1OX0.qsBkLHz39x1LSSTyAo1iwHtYW0wUpwzsxiASuvXDoS8","expires_in":3600,"role":"admin"}
+=== 9. Login failure (wrong password) ===
+{"error":"Invalid credentials"}
+=== 10. Patient books routine teleconsultation ===
+{"id":1,"patient_id":2,"doctor_id":1,"campus_id":"CAMPUS-04","department":"Cardiology","mode":"teleconsultation","scheduled_at":"2026-09-10T10:00:00Z","status":"requested","priority":"routine","notes":null,"created_at":"2026-09-03 05:44:19"}
+=== 11. Patient books CRITICAL appointment (triggers alert fn) ===
+{"id":2,"patient_id":2,"doctor_id":1,"campus_id":"CAMPUS-04","department":"ICU","mode":"teleconsultation","scheduled_at":"2026-09-04T02:00:00Z","status":"requested","priority":"critical","notes":"Sudden chest pain, SpO2 dropping","created_at":"2026-09-03 05:44:19"}
+=== 12. Unauthenticated request (no token) ===
+{"error":"Unauthorized: missing or invalid token"}
+=== 13. Patient lists own appointments (2 results) ===
+[{"id":2,"patient_id":2,"doctor_id":1,"campus_id":"CAMPUS-04","department":"ICU","mode":"teleconsultation","scheduled_at":"2026-09-04T02:00:00Z","status":"requested","priority":"critical","notes":"Sudden chest pain, SpO2 dropping","created_at":"2026-09-03 05:44:19"},{"id":1,"patient_id":2,"doctor_id":1,"campus_id":"CAMPUS-04","department":"Cardiology","mode":"teleconsultation","scheduled_at":"2026-09-10T10:00:00Z","status":"requested","priority":"routine","notes":null,"created_at":"2026-09-03 05:44:19"}]
+=== 14. Doctor confirms appointment 1 ===
+{"id":1,"patient_id":2,"doctor_id":1,"campus_id":"CAMPUS-04","department":"Cardiology","mode":"teleconsultation","scheduled_at":"2026-09-10T10:00:00Z","status":"confirmed","priority":"routine","notes":null,"created_at":"2026-09-03 05:44:19"}
+=== 15. Patient forbidden from updating status (RBAC test) ===
+{"error":"Forbidden: requires role doctor/admin"}
+=== 16. Admin views alert log (fired by critical-priority trigger) ===
+[{"id":1,"appointment_id":2,"event":"appointment.critical","message":"ALERT: Critical-priority teleconsultation appointment #2 booked for patient 2 with doctor 1 at campus CAMPUS-04 (ICU). Immediate triage required.","created_at":"2026-09-03 05:44:19"}]
+=== 17. Admin deletes appointment 2 ===
+HTTP 204
+=== 18. Doctor forbidden from delete (RBAC test) ===
+{"error":"Forbidden: requires role admin"}
